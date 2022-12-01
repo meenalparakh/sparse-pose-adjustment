@@ -85,17 +85,17 @@ function initializeChordal(Z, numPoses)
   X
 end
 
-z, numPoses = readG2oFile("./../intel.g2o")
-X = initializeChordal(z, numPoses)
-plotPose(X, numPoses)
-X = optimizePose(X, z, 1e-6, numPoses, 10, 0.9)
-plotPose(X, numPoses, false, 2)
-
-X = initializeX_Odom(z, numPoses)
-plotPose(X, numPoses, false, 2)
-
-X = initializeX(z, numPoses, true)
-plotPose(X, numPoses, false, 2)
+# z, numPoses = readG2oFile("./../intel.g2o")
+# X = initializeChordal(z, numPoses)
+# plotPose(X, numPoses)
+# X = optimizePose(X, z, 1e-6, numPoses, 10, 0.9)
+# plotPose(X, numPoses, false, 2)
+#
+# X = initializeX_Odom(z, numPoses)
+# plotPose(X, numPoses, false, 2)
+#
+# X = initializeX(z, numPoses, true)
+# plotPose(X, numPoses, false, 2)
 
 function transform(j,i,X,edge, reverse = false)
   if reverse

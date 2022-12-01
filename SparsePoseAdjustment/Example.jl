@@ -7,7 +7,7 @@ include("SpanningTree.jl")
 
 function example1()
   # z = OrderedDict{Tuple, Edge}()
-  z, numPoses = readG2oFile("./../MIT_Kilian.g2o")
+  z, numPoses = readG2oFile("./../datasets/city.g2o")
   ## for intel  - start at 1e-6, factor = 0.9
 
   # length(z)
@@ -25,7 +25,7 @@ example1()
 ###### odom intialization ########
 function example2()
   # z = OrderedDict{Tuple, Edge}()
-  z, numPoses = readG2oFile("./../intel.g2o")
+  z, numPoses = readG2oFile("./../datasets/MIT_Kilian.g2o")
   X_odom = initializeX_Odom(z, numPoses)
   X_odom = optimizePose(X_odom, z, 1e-6, numPoses, 10, 0.7)
   plotPose(X_odom, numPoses)
@@ -34,18 +34,23 @@ end
 example2()
 
 ###### chordal intialization ########
-function example3()
-  z, numPoses = readG2oFile("./../MIT_Kilian.g2o")
+function example3(filename, save_fname)
+  z, numPoses = readG2oFile(filename)
   X = initializeChordal(z, numPoses)
   X = optimizePose(X, z, 1e-6, numPoses, 10, 0.9)
   plotPose(X, numPoses, false, 2)
+  savefig("./../results/"*save_fname)
 end
 
-example3()
+example3("./../datasets/city.g2o", "city.png")
+example3("./../datasets/manhattan.g2o", "manhattan.png")
+example3("./../datasets/CSAIL.g2o", "CSAIL.png")
+example3("./../datasets/kitti.g2o", "kitti.png")
+
 ################################  time testing  ########
 
 v = OrderedDict{Int32, Array}()
-vertices = readG2oFileVertices("./../intel.g2o", v)
+vertices = readG2oFileVertices("./../datasets/intel.g2o", v)
 
 init_X = zeros(3, numPoses)
 if (vertices!=0)
@@ -53,12 +58,11 @@ if (vertices!=0)
     init_X[:,i] = v[i]
   end
 end
-
-plotPose(init_X)
+init_X
+plotPose(init_X, numPoses)
 
 optimizePose(init_X, z, 1e-6, numPoses, 30, 0.9,1e10)
-plotPose(init_X, scatter = true)
-
+plotPose(init_X, numPoses) #, scatter_plot=true)
 
 
 
@@ -67,7 +71,7 @@ plotPose(init_X, scatter = true)
 # @btime CreateSparse()
 # SharedArray{Float64}(150*length(r))
 # errorVec = SharedArray{Array,1}(undef, length(z))
-z, numPoses = readG2oFile("./../city.g2o")
+z, numPoses = readG2oFile("./../datasets/city.g2o")
 X = initializeX(z, numPoses)
 errorVec = Array{Array,1}(undef, length(z))
 initializeError(errorVec, z)
